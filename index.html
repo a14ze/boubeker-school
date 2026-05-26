@@ -219,25 +219,8 @@
         .ring-header h2 {
             margin: 0;
             font-family: 'Amiri', serif;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             color: var(--gold-bright);
-        }
-
-        .ring-meta-info {
-            display: flex;
-            gap: 6px;
-            margin-top: 3px;
-            flex-wrap: wrap;
-        }
-
-        .badge-info {
-            background: rgba(197, 160, 89, 0.25);
-            color: #fff;
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            border: 1px solid var(--gold);
         }
 
         .time-container {
@@ -448,7 +431,7 @@
                 <div class="number" style="font-size: 1rem; color:var(--gold)">مدرسة بوبكر محمد</div>
             </div>
             <div class="stat-card">
-                <h3>الحلقات والأفواج</h3>
+                <h3>الحلقات</h3>
                 <div class="number" id="teachers-count">0</div>
             </div>
             <div class="stat-card">
@@ -480,18 +463,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label style="font-weight: bold;">🗂️ فوج جديد لأستاذ:</label>
+                    <label style="font-weight: bold;">🗂️ حلقة جديدة:</label>
                     <input type="text" id="new-teacher" placeholder="اسم الأستاذ...">
-                    <input type="text" id="new-group" placeholder="اسم الفوج (مثل: الفوج أ، الإتقان)...">
-                    <input type="text" id="new-age" placeholder="الفئة العمرية (مثل: أطفال، كبار)...">
                     <input type="text" id="new-time" placeholder="التواقيت (افصل بفاصلة)...">
-                    <button class="btn-main" onclick="addTeacher()">➕ فتح الفوج</button>
+                    <button class="btn-main" onclick="addTeacher()">➕ فتح الحلقة</button>
                 </div>
 
                 <div class="form-group">
                     <label style="font-weight: bold;">👤 تسجيل تلميذ جديد:</label>
                     <input type="text" id="new-student" placeholder="اسم التلميذ الكامل...">
-                    <input type="text" id="new-student-quran" placeholder="مقدار الحفظ (مثال: 5 أحزاب)...">
+                    <input type="text" id="new-student-quran" placeholder="مقدار الحفظ (مثال: 5 أحزاب، حزب واحد)...">
                     <select id="select-teacher" style="width: 100%;"></select>
                     <button class="btn-main" style="background-color: var(--primary-light);" onclick="addStudent()">➕ تسجيل</button>
                 </div>
@@ -511,12 +492,8 @@
     </div>
 
     <script>
-        // تحديث البيانات الافتراضية لتدعم الأفواج والفئات العمرية بشكل مرن كـ معرّف فريد
         const defaultData = {
-            "الأستاذ زرق الراس - الفوج الأول": {
-                teacherName: "الأستاذ زرق الراس",
-                groupName: "الفوج الأول",
-                ageGroup: "شباب",
+            "الأستاذ زرق الراس": {
                 visibility: "show",
                 times: ["الأحد: 09:30 إلى 13:00", "الثلاثاء: 09:30 إلى 13:00", "الأربعاء: 09:30 إلى 13:00", "الخميس: 11:00 إلى 15:00"],
                 students: [
@@ -537,10 +514,10 @@
                     { name: "عبد الصمد زرق الراس", quran: "غير محدد" }
                 ]
             },
-            "الأستاذ سليماني - فوج أ": { teacherName: "الأستاذ سليماني", groupName: "فوج أ", ageGroup: "كبار", visibility: "show", times: ["الثلاثاء: 18:00 إلى 20:00", "الجمعة: 18:00 إلى 20:00"], students: [] },
-            "الأستاذة كاتب - الإناث": { teacherName: "الأستاذة كاتب", groupName: "الإناث", ageGroup: "مختلف الأعمار", visibility: "show", times: ["السبت إلى الثلاثاء: 13:15", "الخميس: صباحاً ومساءً"], students: [] },
-            "الأستاذة ميشاني - فوج البراعم": { teacherName: "الأستاذة ميشاني", groupName: "فوج البراعم", ageGroup: "أطفال (5-8 سنوات)", visibility: "show", times: ["الاثنين: 08:00", "الأربعاء: 15:00"], students: [] },
-            "الأستاذة عطا الله - فوج التجويد": { teacherName: "الأستاذة عطا الله", groupName: "فوج التجويد", ageGroup: "نساء", visibility: "show", times: ["السبت والجمعة: 09:00"], students: [] }
+            "الأستاذ سليماني": { visibility: "show", times: ["الثلاثاء: 18:00 إلى 20:00", "الجمعة: 18:00 إلى 20:00"], students: [] },
+            "الأستاذة كاتب": { visibility: "show", times: ["السبت: 13:15 إلى 17:30", "الأحد: 13:15 إلى 17:30", "الاثنين: 13:15 إلى 17:30", "الثلاثاء: 13:15 إلى 17:30", "الخميس: 08:00 إلى 11:00 و 15:15 إلى 17:30"], students: [] },
+            "الأستاذة ميشاني": { visibility: "show", times: ["الاثنين: 08:00 إلى 12:00", "الأربعاء: 15:00 إلى 18:00"], students: [] },
+            "الأستاذة عطا الله": { visibility: "show", times: ["السبت: 09:00 إلى 13:00", "الجمعة: 09:00 إلى 13:00"], students: [] }
         };
 
         const defaultAbout = {
@@ -551,11 +528,12 @@
             phoneNum: ""
         };
 
-        let schoolData = JSON.parse(localStorage.getItem('quran_school_v7_data')) || defaultData;
-        let aboutData = JSON.parse(localStorage.getItem('quran_school_v7_about')) || defaultAbout;
-        let adminPassword = localStorage.getItem('quran_admin_v7_pass') || "1234";
+        let schoolData = JSON.parse(localStorage.getItem('quran_school_v6_data')) || defaultData;
+        let aboutData = JSON.parse(localStorage.getItem('quran_school_v6_about')) || defaultAbout;
+        let adminPassword = localStorage.getItem('quran_admin_v6_pass') || "1234";
         let isAdmin = false;
 
+        // دالة ذكية لاستخراج الرقم من نص مقدار الحفظ لغرض الترتيب
         function getQuranNumber(quranText) {
             if (!quranText || quranText === "غير محدد") return -1;
             let match = quranText.match(/\d+/);
@@ -563,35 +541,31 @@
             if (quranText.includes("حزبين")) return 2;
             if (quranText.includes("حزب")) return 1;
             if (quranText.includes("كامل") || quranText.includes("القرآن")) return 60;
-            return 0;
+            return 0; // نصوص أخرى
         }
 
+        // دالة تقوم بترتيب الطلاب داخل كل حلقة بناء على مقدار الحفظ تنازلياً
         function sortStudentsByQuran() {
-            for (let id in schoolData) {
-                if (schoolData[id].students && schoolData[id].students.length > 0) {
-                    schoolData[id].students.sort((a, b) => {
+            for (let teacher in schoolData) {
+                if (schoolData[teacher].students && schoolData[teacher].students.length > 0) {
+                    schoolData[teacher].students.sort((a, b) => {
                         let numA = getQuranNumber(a.quran);
                         let numB = getQuranNumber(b.quran);
-                        if (numB !== numA) return numB - numA;
-                        return a.name.localeCompare(b.name, 'ar');
+                        if (numB !== numA) {
+                            return numB - numA; // الترتيب التنازلي حسب الرقم
+                        }
+                        return a.name.localeCompare(b.name, 'ar'); // ترتيب أبجدي عند التساوي
                     });
                 }
             }
         }
 
-        // دالة لترقية وتأمين هيكلة البيانات القديمة لتتوافق مع خاصية الأفواج الجديدة
         function upgradeDataStructure() {
             let updated = false;
-            for (let key in schoolData) {
-                if (!schoolData[key].teacherName) {
-                    schoolData[key].teacherName = key;
-                    schoolData[key].groupName = "الفوج العام";
-                    schoolData[key].ageGroup = "غير محدد";
-                    updated = true;
-                }
-                if (schoolData[key].students && schoolData[key].students.length > 0) {
-                    if (typeof schoolData[key].students[0] === 'string') {
-                        schoolData[key].students = schoolData[key].students.map(name => {
+            for (let teacher in schoolData) {
+                if (schoolData[teacher].students && schoolData[teacher].students.length > 0) {
+                    if (typeof schoolData[teacher].students[0] === 'string') {
+                        schoolData[teacher].students = schoolData[teacher].students.map(name => {
                             return { name: name, quran: "غير محدد" };
                         });
                         updated = true;
@@ -599,13 +573,13 @@
                 }
             }
             if (updated) {
-                localStorage.setItem('quran_school_v7_data', JSON.stringify(schoolData));
+                localStorage.setItem('quran_school_v6_data', JSON.stringify(schoolData));
             }
         }
 
         function renderSchool() {
             upgradeDataStructure();
-            sortStudentsByQuran();
+            sortStudentsByQuran(); // تشغيل الترتيب التلقائي قبل العرض المباشر
 
             document.getElementById('about-title').innerText = aboutData.title;
             document.getElementById('about-text').innerText = aboutData.text;
@@ -626,19 +600,18 @@
             selectTeacher.innerHTML = '';
 
             let totalStudents = 0;
-            let totalRings = 0;
+            let totalTeachers = 0;
 
-            for (let ringKey in schoolData) {
-                totalRings++;
-                let ringInfo = schoolData[ringKey];
+            for (let teacher in schoolData) {
+                totalTeachers++;
+                let ringInfo = schoolData[teacher];
                 totalStudents += ringInfo.students.length;
 
                 if (!ringInfo.visibility) ringInfo.visibility = "show";
 
-                // تعبئة القائمة المنسدلة باسم الأستاذ وفوجها بوضوح للتحكم
                 let option = document.createElement('option');
-                option.value = ringKey;
-                option.innerText = `${ringInfo.teacherName} (${ringInfo.groupName})`;
+                option.value = teacher;
+                option.innerText = `حلقة ${teacher}`;
                 selectTeacher.appendChild(option);
 
                 let ringCard = document.createElement('div');
@@ -653,15 +626,11 @@
                     timeBadgesHTML = `<span class="time-badge">⏱️ غير محدد</span>`;
                 }
 
-                let currentId = totalRings;
+                let currentId = totalTeachers;
                 ringCard.innerHTML = `
                     <div class="ring-header" onclick="toggleRingList(${currentId})">
                         <div style="flex: 1; padding-left: 10px;">
-                            <h2>حلقة ${ringInfo.teacherName} ${ringInfo.visibility === 'hide' ? '<span style="font-size:0.75rem; color:#ff9999; font-weight:normal;">(مخفية)</span>' : ''}</h2>
-                            <div class="ring-meta-info">
-                                <span class="badge-info">📦 الفوج: ${ringInfo.groupName}</span>
-                                <span class="badge-info" style="background: rgba(44, 46, 19, 0.2)">👶 الفئة: ${ringInfo.ageGroup || "غير محدد"}</span>
-                            </div>
+                            <h2>حلقة ${teacher} ${ringInfo.visibility === 'hide' ? '<span style="font-size:0.75rem; color:#ff9999; font-weight:normal;">(مخفية)</span>' : ''}</h2>
                             <div class="time-container">${timeBadgesHTML}</div>
                         </div>
                         <div class="header-left-side">
@@ -671,20 +640,19 @@
                     </div>
                     
                     <div class="ring-actions" id="actions-${currentId}" style="display: ${isAdmin ? 'flex' : 'none'}">
-                        <button class="btn-sm btn-warning" onclick="editTeacherName('${ringKey}')">✏️ اسم الأستاذ</button>
-                        <button class="btn-sm btn-warning" style="background-color: #2e6930;" onclick="editGroupNameAndAge('${ringKey}')">📝 الفوج/العمر</button>
-                        <button class="btn-sm btn-warning" style="background-color:#977232;" onclick="editTeacherTime('${ringKey}')">⏱️ المواقيت</button>
-                        <button class="btn-sm btn-info" onclick="bulkEditStudentsQuran('${ringKey}')">📝 حفظ جماعي</button>
+                        <button class="btn-sm btn-warning" onclick="editTeacherName('${teacher}')">✏️ الاسم</button>
+                        <button class="btn-sm btn-warning" style="background-color:#977232;" onclick="editTeacherTime('${teacher}')">⏱️ المواقيت</button>
+                        <button class="btn-sm btn-info" onclick="bulkEditStudentsQuran('${teacher}')">📝 حفظ جماعي</button>
                         
                         <div style="display:flex; align-items:center; gap:5px; background:#fff; padding:2px 5px; border-radius:4px; border:1px solid #cbc0b0;">
                             <span style="font-size:0.8rem; font-weight:bold;">👁️:</span>
-                            <select style="padding:2px; font-size:0.75rem; width: auto;" onchange="toggleStudentsVisibility('${ringKey}', this.value)">
+                            <select style="padding:2px; font-size:0.75rem; width: auto;" onchange="toggleStudentsVisibility('${teacher}', this.value)">
                                 <option value="show" ${ringInfo.visibility === 'show' ? 'selected' : ''}>عرض</option>
                                 <option value="hide" ${ringInfo.visibility === 'hide' ? 'selected' : ''}>إخفاء</option>
                             </select>
                         </div>
 
-                        <button class="btn-sm btn-danger" onclick="deleteTeacher('${ringKey}')">❌ حذف</button>
+                        <button class="btn-sm btn-danger" onclick="deleteTeacher('${teacher}')">❌ حذف</button>
                     </div>
 
                     <div class="student-list-container" id="list-container-${currentId}">
@@ -696,11 +664,12 @@
 
                 let ul = document.getElementById(`list-${currentId}`);
                 if(ringInfo.visibility === "hide" || ringInfo.students.length === 0) {
-                    ul.innerHTML = `<li class="student-item" style="color:#aaa; font-weight:400; font-size:0.9rem;">لا يوجد طلاب حالياً في هذا الفوج أو القائمة مخفية.</li>`;
+                    ul.innerHTML = `<li class="student-item" style="color:#aaa; font-weight:400; font-size:0.9rem;">لا يوجد طلاب حالياً في هذه الحلقة أو القائمة مخفية.</li>`;
                 } else {
                     ringInfo.students.forEach((student, index) => {
                         let li = document.createElement('li');
                         li.className = 'student-item';
+                        
                         let quranDisplay = student.quran ? student.quran : "غير محدد";
 
                         li.innerHTML = `
@@ -709,8 +678,8 @@
                                 <span class="student-quran">📖 مقدار الحفظ: ${quranDisplay}</span>
                             </div>
                             <div class="student-ctrls">
-                                <button class="btn-sm btn-warning" style="display: ${isAdmin ? 'block' : 'none'}; background-color: #705828;" onclick="event.stopPropagation(); editStudentQuran('${ringKey}', ${index})">✏️ تعديل الحفظ</button>
-                                <button class="btn-sm btn-danger" style="display: ${isAdmin ? 'block' : 'none'}" onclick="event.stopPropagation(); deleteStudent('${ringKey}', ${index})">حذف</button>
+                                <button class="btn-sm btn-warning" style="display: ${isAdmin ? 'block' : 'none'}; background-color: #705828;" onclick="event.stopPropagation(); editStudentQuran('${teacher}', ${index})">✏️ تعديل الحفظ</button>
+                                <button class="btn-sm btn-danger" style="display: ${isAdmin ? 'block' : 'none'}" onclick="event.stopPropagation(); deleteStudent('${teacher}', ${index})">حذف</button>
                             </div>
                         `;
                         ul.appendChild(li);
@@ -718,11 +687,11 @@
                 }
             }
 
-            document.getElementById('teachers-count').innerText = totalRings;
+            document.getElementById('teachers-count').innerText = totalTeachers;
             document.getElementById('students-count').innerText = totalStudents;
             
-            localStorage.setItem('quran_school_v7_data', JSON.stringify(schoolData));
-            localStorage.setItem('quran_school_v7_about', JSON.stringify(aboutData));
+            localStorage.setItem('quran_school_v6_data', JSON.stringify(schoolData));
+            localStorage.setItem('quran_school_v6_about', JSON.stringify(aboutData));
         }
 
         function updateAboutSection() {
@@ -745,8 +714,8 @@
             }
         }
 
-        function toggleStudentsVisibility(ringKey, value) {
-            schoolData[ringKey].visibility = value;
+        function toggleStudentsVisibility(teacher, value) {
+            schoolData[teacher].visibility = value;
             renderSchool();
         }
 
@@ -762,13 +731,14 @@
             }
         }
 
-        /* نظام النقر المزدوج المتطور للهواتف والحواسب */
+        /* نظام النقر المزدوج المتوافق تماماً والموحد للهواتف والحواسب */
         const headerEl = document.getElementById('main-header');
         let lastTap = 0;
 
         headerEl.addEventListener('click', function (e) {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
+            
             if (tapLength < 300 && tapLength > 0) {
                 e.preventDefault();
                 triggerSecretAdmin();
@@ -803,7 +773,7 @@
             let newPass = input.value.trim();
             if(newPass !== "") {
                 adminPassword = newPass;
-                localStorage.setItem('quran_admin_v7_pass', adminPassword);
+                localStorage.setItem('quran_admin_v6_pass', adminPassword);
                 alert(`تم تحديث الكود بنجاح! الجديد هو: ${newPass}`);
                 input.value = "";
             }
@@ -820,108 +790,63 @@
 
         function addTeacher() {
             const inputName = document.getElementById('new-teacher');
-            const inputGroup = document.getElementById('new-group');
-            const inputAge = document.getElementById('new-age');
             const inputTime = document.getElementById('new-time');
-
             let name = inputName.value.trim();
-            let group = inputGroup.value.trim() || "الفوج العام";
-            let age = inputAge.value.trim() || "غير محدد";
             let timeVal = inputTime.value.trim();
 
             if(name !== "") {
-                let uniqueKey = `${name} - ${group}`;
-                if(schoolData[uniqueKey]) {
-                    alert("هذا الفوج لهذا الأستاذ مسجل بالفعل!");
+                if(schoolData[name]) {
+                    alert("هذا الأستاذ مسجل بالفعل!");
                 } else {
                     let timesArray = timeVal ? timeVal.split(',').map(t => t.trim()) : [];
-                    schoolData[uniqueKey] = {
-                        teacherName: name,
-                        groupName: group,
-                        ageGroup: age,
+                    schoolData[name] = {
                         visibility: "show",
                         times: timesArray.length > 0 ? timesArray : ["غير محدد"],
                         students: []
                     };
                     inputName.value = "";
-                    inputGroup.value = "";
-                    inputAge.value = "";
                     inputTime.value = "";
                     renderSchool();
                 }
-            } else {
-                alert("يرجى كتابة اسم الأستاذ أولاً!");
             }
         }
 
-        function editTeacherName(oldKey) {
+        function editTeacherName(oldName) {
             event.stopPropagation();
-            let currentName = schoolData[oldKey].teacherName;
-            let newName = prompt(`تعديل اسم الأستاذ:`, currentName);
-            if(newName && newName.trim() !== "" && newName.trim() !== currentName) {
+            let newName = prompt(`تعديل الاسم من (${oldName}) إلى:`, oldName);
+            if(newName && newName.trim() !== "" && newName !== oldName) {
                 newName = newName.trim();
-                schoolData[oldKey].teacherName = newName;
-                
-                // إعادة توليد المعرف الفريد للفوج
-                let newKey = `${newName} - ${schoolData[oldKey].groupName}`;
-                schoolData[newKey] = schoolData[oldKey];
-                delete schoolData[oldKey];
-                
+                schoolData[newName] = schoolData[oldName];
+                delete schoolData[oldName];
                 renderSchool();
             }
         }
 
-        // خاصية تعديل اسم الفوج والفئة العمرية للأستاذ الواحد
-        function editGroupNameAndAge(oldKey) {
+        function editTeacherTime(teacher) {
             event.stopPropagation();
-            let currentGroup = schoolData[oldKey].groupName;
-            let currentAge = schoolData[oldKey].ageGroup || "غير محدد";
-            
-            let newGroup = prompt(`تعديل اسم الفوج:`, currentGroup);
-            if (newGroup === null) return;
-            newGroup = newGroup.trim() || "الفوج العام";
-
-            let newAge = prompt(`تعديل الفئة العمرية لهذا الفوج:`, currentAge);
-            if (newAge === null) return;
-            newAge = newAge.trim() || "غير محدد";
-
-            schoolData[oldKey].groupName = newGroup;
-            schoolData[oldKey].ageGroup = newAge;
-
-            // إذا تغير اسم الفوج، نقوم بتحديث المعرّف الفريد للخانة في النظام
-            let newKey = `${schoolData[oldKey].teacherName} - ${newGroup}`;
-            if (newKey !== oldKey) {
-                schoolData[newKey] = schoolData[oldKey];
-                delete schoolData[oldKey];
-            }
-            renderSchool();
-            alert("تم تحديث بيانات الفوج بنجاح!");
-        }
-
-        function editTeacherTime(ringKey) {
-            event.stopPropagation();
-            let currentTimes = schoolData[ringKey].times.join(', ');
+            let currentTimes = schoolData[teacher].times.join(', ');
             let newTimeVal = prompt(`تعديل المواقيت (افصل بفاصلة , ):`, currentTimes);
             if(newTimeVal !== null) {
-                schoolData[ringKey].times = newTimeVal.trim() ? newTimeVal.split(',').map(t => t.trim()) : ["غير محدد"];
+                schoolData[teacher].times = newTimeVal.trim() ? newTimeVal.split(',').map(t => t.trim()) : ["غير محدد"];
                 renderSchool();
             }
         }
 
-        function bulkEditStudentsQuran(ringKey) {
+        // دالة التعديل الجماعي لمقدار الحفظ لكل طلاب الحلقة في نفس الوقت
+        function bulkEditStudentsQuran(teacher) {
             event.stopPropagation();
-            if (schoolData[ringKey].students.length === 0) {
-                alert("لا يوجد طلاب في هذا الفوج لتعديل حفظهم جماعياً!");
+            if (schoolData[teacher].students.length === 0) {
+                alert("لا يوجد طلاب في هذه الحلقة لتعديل حفظهم جماعياً!");
                 return;
             }
-            let bulkQuran = prompt(`أدخل مقدار الحفظ الموحد لطلاب حلقة (${schoolData[ringKey].teacherName} - ${schoolData[ringKey].groupName}):`);
+            let bulkQuran = prompt(`أدخل مقدار الحفظ الموحد لجميع طلاب حلقة (${teacher}):\n(سيتم استبدال الحفظ الحالي لجميع طلاب الحلقة)`);
             if (bulkQuran !== null) {
                 let finalQuran = bulkQuran.trim() || "غير محدد";
-                schoolData[ringKey].students.forEach(student => {
+                schoolData[teacher].students.forEach(student => {
                     student.quran = finalQuran;
                 });
                 renderSchool();
-                alert("تم تحديث حفظ جميع طلاب الفوج بنجاح!");
+                alert(`تم تحديث حفظ جميع طلاب حلقة ${teacher} بنجاح!`);
             }
         }
 
@@ -932,10 +857,10 @@
             
             let studentName = inputName.value.trim();
             let studentQuran = inputQuran.value.trim() || "غير محدد";
-            let selectedRingKey = teacherSelect.value;
+            let selectedTeacher = teacherSelect.value;
 
-            if(studentName !== "" && selectedRingKey) {
-                schoolData[selectedRingKey].students.push({
+            if(studentName !== "" && selectedTeacher) {
+                schoolData[selectedTeacher].students.push({
                     name: studentName,
                     quran: studentQuran
                 });
@@ -945,27 +870,27 @@
             }
         }
 
-        function editStudentQuran(ringKey, index) {
-            let currentQuran = schoolData[ringKey].students[index].quran || "غير محدد";
-            let studentName = schoolData[ringKey].students[index].name;
+        function editStudentQuran(teacher, index) {
+            let currentQuran = schoolData[teacher].students[index].quran || "غير محدد";
+            let studentName = schoolData[teacher].students[index].name;
             let newQuran = prompt(`تعديل مقدار حفظ التلميذ (${studentName}):`, currentQuran);
             if (newQuran !== null) {
-                schoolData[ringKey].students[index].quran = newQuran.trim() || "غير محدد";
+                schoolData[teacher].students[index].quran = newQuran.trim() || "غير محدد";
                 renderSchool();
             }
         }
 
-        function deleteStudent(ringKey, index) {
+        function deleteStudent(teacher, index) {
             if(confirm("هل تريد حذف هذا التلميذ؟")) {
-                schoolData[ringKey].students.splice(index, 1);
+                schoolData[teacher].students.splice(index, 1);
                 renderSchool();
             }
         }
 
-        function deleteTeacher(ringKey) {
+        function deleteTeacher(teacher) {
             event.stopPropagation();
-            if(confirm(`هل تريد حذف حلقة الأستاذ (${schoolData[ringKey].teacherName}) - فوج (${schoolData[ringKey].groupName}) نهائياً؟`)) {
-                delete schoolData[ringKey];
+            if(confirm(`هل تريد حذف حلقة ${teacher} نهائياً؟`)) {
+                delete schoolData[teacher];
                 renderSchool();
             }
         }
