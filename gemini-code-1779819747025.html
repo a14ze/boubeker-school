@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع مدرسة بوبكر محمد القرآنية</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;900&display=swap');
+        
+        :root {
+            --bg-color: #f5ede2;
+            --primary-dark: #132e15;
+            --primary-light: #1c4520;
+            --gold: #c5a059;
+            --gold-bright: #d4af37;
+            --text-dark: #2c251e;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            background-image: radial-gradient(rgba(197, 160, 89, 0.04) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* هيدر عصري ومدمج وموفر للمساحة */
+        header {
+            background: linear-gradient(135deg, #0b1d0d, var(--primary-dark));
+            color: white;
+            text-align: center;
+            padding: 15px 20px;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 700;
+            color: var(--gold-bright);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+        }
+
+        header p {
+            font-family: 'Amiri', serif;
+            font-size: 1rem;
+            font-style: italic;
+            color: #e2d1b5;
+            margin: 2px 0 0 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
+
+        /* لوحة علوية مدمجة تجمع التعريف والتواصل معاً */
+        .top-info-bar {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .top-info-bar {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        .about-section {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 10px rgba(44, 37, 30, 0.04);
+            border: 1px solid #eadecc;
+            border-right: 5px solid var(--gold);
+        }
+
+        .about-section h2 {
+            font-family: 'Amiri', serif;
+            color: var(--primary-dark);
+            margin: 0 0 8px 0;
+            font-size: 1.4rem;
+        }
+
+        .about-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #4a4035;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .contact-section {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(44, 37, 30, 0.04);
+            border: 1px solid #eadecc;
+            border-top: 4px solid var(--gold);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 6px;
+            background: #faf6f0;
+            transition: all 0.2s ease;
+            font-size: 0.88rem;
+        }
+
+        .contact-link:hover {
+            background: #f0e6d6;
+            transform: translateY(-1px);
+        }
+
+        .contact-link.fb { color: #1877f2; }
+        .contact-link.web { color: var(--primary-dark); }
+        .contact-link.phone { color: #25d366; }
+
+        /* إحصائيات مدمجة في سطر واحد خفيف */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(44, 37, 30, 0.04);
+            border: 1px solid #eadecc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stat-card h3 {
+            margin: 0 0 4px 0;
+            color: #706253;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .stat-card .number {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--primary-dark);
+            font-family: 'Amiri', serif;
+            line-height: 1.2;
+        }
+
+        .hadith-zone {
+            text-align: center;
+            font-family: 'Amiri', serif;
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            margin: 15px 0;
+            padding: 8px;
+            background: #fdfaf4;
+            border: 1px dashed var(--gold);
+            border-radius: 6px;
+        }
+
+        .grid-rings {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ring-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #eadecc;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .ring-header {
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary-light));
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .ring-header:hover {
+            filter: brightness(1.08);
+        }
+
+        .ring-header h2 {
+            margin: 0;
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            color: var(--gold-bright);
+        }
+
+        .time-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 3px;
+        }
+
+        .time-badge {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .header-left-side {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .count-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            border: 1px solid var(--gold);
+            font-weight: bold;
+        }
+
+        .arrow-icon {
+            font-size: 1rem;
+            color: var(--gold-bright);
+            transition: transform 0.2s ease;
+        }
+
+        .student-list-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: #fff;
+        }
+
+        .student-list-container.open {
+            max-height: 3500px; 
+            border-top: 1px solid #eadecc;
+        }
+
+        .ring-actions {
+            background: #faf6f0;
+            padding: 10px 20px;
+            display: none;
+            gap: 12px;
+            border-bottom: 1px solid #eadecc;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .student-list {
+            list-style: none;
+            padding: 5px 20px;
+            margin: 0;
+        }
+
+        .student-item {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f4ece1;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-item:nth-child(even) {
+            background-color: #faf8f5;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+        }
+        .btn-danger { background-color: #d9534f; color: white; }
+        .btn-warning { background-color: #f0ad4e; color: white; }
+
+        .admin-panel {
+            background: #eae0d2;
+            border: 2px double var(--gold);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .admin-ctrls {
+            display: none;
+            margin-top: 15px;
+            gap: 15px;
+            flex-direction: column;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--gold);
+            text-align: right;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            border-bottom: 1px dashed #eadecc;
+            padding-bottom: 12px;
+        }
+
+        input, select, button, textarea {
+            padding: 8px 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            border: 1px solid #cbc0b0;
+        }
+
+        textarea {
+            resize: vertical;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button { font-weight: 700; cursor: pointer; }
+        button.btn-main { background-color: var(--primary-dark); color: white; border: 1px solid var(--gold); }
+        button.btn-main:hover { background-color: var(--primary-light); }
+        button.btn-admin { background-color: #705828; color: white; border: 1px solid var(--gold-bright); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>المدرسة القرآنية بوبكر محمد</h1>
+        <p>رحمه الله وأسكنه فسيح جناته</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="top-info-bar">
+            <div class="about-section">
+                <h2 id="about-title">🕌 بطاقة تعريفية</h2>
+                <p id="about-text">تُعنى المدرسة القرآنية بوبكر محمد بتحفيظ كتاب الله جل وعلا وترسيخ قيم القرآن الكريم وأحكام التجويد لدى الناشئة والشباب. تسعى المدرسة من خلال حلقاتها المتميزة إلى تنشئة جيل واعٍ، متمسك بكتاب ربه، متقن لأصول تلاوته، عبر برامج تعليمية مدروسة ومواقيت مرنة تناسب الجميع.</p>
+            </div>
+            
+            <div class="contact-section">
+                <a href="#" id="link-website" target="_blank" class="contact-link web">🌐 موقع المدرسة</a>
+                <a href="#" id="link-facebook" target="_blank" class="contact-link fb">🔵 صفحة الفيسبوك</a>
+                <a href="#" id="link-phone" class="contact-link phone">📞 هاتف التواصل</a>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>المؤسسة</h3>
+                <div class="number" style="font-size: 1.1rem; color:var(--gold)">مدرسة بوبكر محمد</div>
+            </div>
+            <div class="stat-card">
+                <h3>الحلقات</h3>
+                <div class="number" id="teachers-count">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>إجمالي الطلبة</h3>
+                <div class="number" id="students-count">0</div>
+            </div>
+        </div>
+
+        <div class="hadith-zone">
+            "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
+        </div>
+
+        <div class="grid-rings" id="rings-container"></div>
+
+        <div class="admin-panel">
+            <button class="btn-admin" id="login-btn" onclick="toggleAdmin()">🔒 الدخول لغرفة الإدارة والتعديل</button>
+            
+            <div class="admin-ctrls" id="admin-ctrls">
+                <div class="form-group" style="background-color: #fcfaf7; padding: 12px; border-radius: 6px;">
+                    <label style="font-weight: bold; color: var(--primary-dark);">📝 إعدادات الواجهة والاتصال:</label>
+                    <div style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                        <input type="text" id="input-about-title" placeholder="عنوان البطاقة...">
+                        <textarea id="input-about-text" rows="2" placeholder="نص التعريف بالمدرسة..."></textarea>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+                            <input type="text" id="input-url-web" placeholder="رابط موقع المدرسة الحقيقي...">
+                            <input type="text" id="input-url-fb" placeholder="رابط صفحة الفيسبوك...">
+                            <input type="text" id="input-url-phone" placeholder="رقم الهاتف...">
+                        </div>
+                        <button class="btn-main" style="background-color: #2e6930; align-self: flex-start;" onclick="updateAboutSection()">💾 حفظ بيانات الواجهة</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>🗂️ حلقة جديدة:</label>
+                    <input type="text" id="new-teacher" placeholder="اسم الأستاذ...">
+                    <input type="text" id="new-time" placeholder="التواقيت (افصل بفاصلة)...">
+                    <button class="btn-main" onclick="addTeacher()">➕ فتح الحلقة</button>
+                </div>
+
+                <div class="form-group">
+                    <label>👤 تسجيل تلميذ:</label>
+                    <input type="text" id="new-student" placeholder="اسم التلميذ الكامل...">
+                    <select id="select-teacher"></select>
+                    <button class="btn-main" style="background-color: var(--primary-light);" onclick="addStudent()">➕ تسجيل</button>
+                </div>
+
+                <div class="form-group" style="background: #fbf9f6; padding: 8px; border-radius: 6px;">
+                    <label>🔑 كود التعديل الجديد:</label>
+                    <input type="password" id="new-password-input" placeholder="اكتب الكود الجديد...">
+                    <button class="btn-admin" style="background-color: #5c4214;" onclick="changeAdminPassword()">💾 تحديث الكود</button>
+                </div>
+
+                <div class="form-group" style="justify-content: center; border: none; padding: 0;">
+                    <button class="btn-sm btn-danger" style="padding: 6px 12px;" onclick="resetToDefaultData()">🔄 إعادة ضبط القائمة الافتراضية النقية</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const defaultData = {
+            "الأستاذ زرق الراس": {
+                visibility: "show",
+                times: ["الأحد: 09:30 إلى 13:00", "الثلاثاء: 09:30 إلى 13:00", "الأربعاء: 09:30 إلى 13:00", "الخميس: 11:00 إلى 15:00"],
+                students: [
+                    "ناصري بن شهرة", "بوروينة اسلام", "ايت عمران الياس", "محمد بوبكر", "أحمد شعيب", 
+                    "ابراهيم عكرمي", "مريم بطاهر", "لجين برابح", "ايت عمران محمد", "بن طرشة ياسين", 
+                    "محيوتي آدم", "بطاهر نور الهدى", "يوسف بلقاسم", "رنيم بوروينة", "قيروان يوسف", 
+                    "شعيب أحمد", "اية بوروينة", "ملاك مصطفى", "اسراء مصطفى", "شعيب عماد ع", 
+                    "خضراوي عبد الله", "عبد الرحمان بلقسام", "ياسين بلقاسم", "ادم مواسمي", 
+                    "إسلام مصطفى", "بن عيشوش عبد اللطيف", "يوسف ريان مصطفى", "حميدة هارون", "عبد الصمد زرق الراس"
+                ]
+            },
+            "الأستاذ سليماني": { visibility: "show", times: ["الثلاثاء: 18:00 إلى 20:00", "الجمعة: 18:00 إلى 20:00"], students: [] },
+            "الأستاذة كاتب": { visibility: "show", times: ["السبت: 13:15 إلى 17:30", "الأحد: 13:15 إلى 17:30", "الاثنين: 13:15 إلى 17:30", "الثلاثاء: 13:15 إلى 17:30", "الخميس: 08:00 إلى 11:00 و 15:15 إلى 17:30"], students: [] },
+            "الأستاذة ميشاني": { visibility: "show", times: ["الاثنين: 08:00 إلى 12:00", "الأربعاء: 15:00 إلى 18:00"], students: [] },
+            "الأستاذة عطا الله": { visibility: "show", times: ["السبت: 09:00 إلى 13:00", "الجمعة: 09:00 إلى 13:00"], students: [] }
+        };
+
+        const defaultAbout = {
+            title: "🕌 بطاقة تعريفية",
+            text: "تُعنى المدرسة القرآنية بوبكر محمد بتحفيظ كتاب الله جل وعلا وترسيخ قيم القرآن الكريم وأحكام التجويد لدى الناشئة والشباب. تسعى المدرسة من خلال حلقاتها المتميزة إلى تنشئة جيل واعٍ، متمسك بكتاب ربه، متقن لأصول تلاوته، عبر برامج تعليمية مدروسة ومواقيت مرنة تناسب الجميع.",
+            webUrl: "",
+            fbUrl: "",
+            phoneNum: ""
+        };
+
+        // تحديث مفاتيح التخزين لضمان التحميل الفوري للشكل العصري الجديد
+        let schoolData = JSON.parse(localStorage.getItem('quran_school_v5_data')) || defaultData;
+        let aboutData = JSON.parse(localStorage.getItem('quran_school_v5_about')) || defaultAbout;
+        let adminPassword = localStorage.getItem('quran_admin_v5_pass') || "1234";
+        let isAdmin = false;
+
+        function renderSchool() {
+            document.getElementById('about-title').innerText = aboutData.title;
+            document.getElementById('about-text').innerText = aboutData.text;
+            document.getElementById('link-website').href = aboutData.webUrl || "#";
+            document.getElementById('link-facebook').href = aboutData.fbUrl || "#";
+            document.getElementById('link-phone').innerText = aboutData.phoneNum ? `📞 هاتف: ${aboutData.phoneNum}` : "📞 هاتف التواصل";
+            document.getElementById('link-phone').href = aboutData.phoneNum ? `tel:${aboutData.phoneNum}` : "#";
+
+            document.getElementById('input-about-title').value = aboutData.title;
+            document.getElementById('input-about-text').value = aboutData.text;
+            document.getElementById('input-url-web').value = aboutData.webUrl || "";
+            document.getElementById('input-url-fb').value = aboutData.fbUrl || "";
+            document.getElementById('input-url-phone').value = aboutData.phoneNum || "";
+
+            const container = document.getElementById('rings-container');
+            const selectTeacher = document.getElementById('select-teacher');
+            container.innerHTML = '';
+            selectTeacher.innerHTML = '';
+
+            let totalStudents = 0;
+            let totalTeachers = 0;
+
+            for (let teacher in schoolData) {
+                totalTeachers++;
+                let ringInfo = schoolData[teacher];
+                totalStudents += ringInfo.students.length;
+
+                if (!ringInfo.visibility) ringInfo.visibility = "show";
+
+                let option = document.createElement('option');
+                option.value = teacher;
+                option.innerText = `حلقة ${teacher}`;
+                selectTeacher.appendChild(option);
+
+                let ringCard = document.createElement('div');
+                ringCard.className = 'ring-card';
+                
+                let timeBadgesHTML = '';
+                if(ringInfo.times && ringInfo.times.length > 0) {
+                    ringInfo.times.forEach(t => {
+                        timeBadgesHTML += `<span class="time-badge">⏱️ ${t}</span>`;
+                    });
+                } else {
+                    timeBadgesHTML = `<span class="time-badge">⏱️ غير محدد</span>`;
+                }
+
+                let currentId = totalTeachers;
+                ringCard.innerHTML = `
+                    <div class="ring-header" onclick="toggleRingList(${currentId})">
+                        <div class="ring-header-top">
+                            <h2>حلقة ${teacher} ${ringInfo.visibility === 'hide' ? '<span style="font-size:0.8rem; color:#ff9999; font-weight:normal;">(مخفية)</span>' : ''}</h2>
+                            <div class="time-container">${timeBadgesHTML}</div>
+                        </div>
+                        <div class="header-left-side">
+                            <span class="count-badge">${ringInfo.students.length} طلاب</span>
+                            <span class="arrow-icon" id="arrow-${currentId}">▼</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ring-actions" id="actions-${currentId}" style="display: ${isAdmin ? 'flex' : 'none'}">
+                        <button class="btn-sm btn-warning" onclick="editTeacherName('${teacher}')">✏️ الاسم</button>
+                        <button class="btn-sm btn-warning" style="background-color:#977232;" onclick="editTeacherTime('${teacher}')">⏱️ المواقيت</button>
+                        
+                        <div style="display:flex; align-items:center; gap:5px; background:#fff; padding:2px 5px; border-radius:4px; border:1px solid #cbc0b0;">
+                            <span style="font-size:0.8rem; font-weight:bold;">👁️ الطلبة:</span>
+                            <select style="padding:2px; font-size:0.75rem;" onchange="toggleStudentsVisibility('${teacher}', this.value)">
+                                <option value="show" ${ringInfo.visibility === 'show' ? 'selected' : ''}>عرض</option>
+                                <option value="hide" ${ringInfo.visibility === 'hide' ? 'selected' : ''}>إخفاء</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-sm btn-danger" onclick="deleteTeacher('${teacher}')">❌ حذف</button>
+                    </div>
+
+                    <div class="student-list-container" id="list-container-${currentId}">
+                        <ul class="student-list" id="list-${currentId}"></ul>
+                    </div>
+                `;
+                
+                container.appendChild(ringCard);
+
+                let ul = document.getElementById(`list-${currentId}`);
+                if(ringInfo.visibility === "hide" || ringInfo.students.length === 0) {
+                    ul.innerHTML = `<li class="student-item" style="color:#aaa; font-weight:400; font-size:0.95rem;">لا يوجد طلاب حالياً في هذه الحلقة.</li>`;
+                } else {
+                    ringInfo.students.forEach((student, index) => {
+                        let li = document.createElement('li');
+                        li.className = 'student-item';
+                        li.innerHTML = `
+                            <span>${index + 1}. ${student}</span>
+                            <button class="btn-sm btn-danger" style="display: ${isAdmin ? 'block' : 'none'}" onclick="event.stopPropagation(); deleteStudent('${teacher}', ${index})">حذف</button>
+                        `;
+                        ul.appendChild(li);
+                    });
+                }
+            }
+
+            document.getElementById('teachers-count').innerText = totalTeachers;
+            document.getElementById('students-count').innerText = totalStudents;
+            
+            localStorage.setItem('quran_school_v5_data', JSON.stringify(schoolData));
+            localStorage.setItem('quran_school_v5_about', JSON.stringify(aboutData));
+        }
+
+        function updateAboutSection() {
+            const titleInput = document.getElementById('input-about-title').value.trim();
+            const textInput = document.getElementById('input-about-text').value.trim();
+            const webInput = document.getElementById('input-url-web').value.trim();
+            const fbInput = document.getElementById('input-url-fb').value.trim();
+            const phoneInput = document.getElementById('input-url-phone').value.trim();
+
+            if (titleInput !== "" && textInput !== "") {
+                aboutData.title = titleInput;
+                aboutData.text = textInput;
+                aboutData.webUrl = webInput;
+                aboutData.fbUrl = fbInput;
+                aboutData.phoneNum = phoneInput;
+                renderSchool();
+                alert("تم الحفظ بنجاح!");
+            } else {
+                alert("يرجى ملء الحقول الأساسية أولاً!");
+            }
+        }
+
+        function toggleStudentsVisibility(teacher, value) {
+            schoolData[teacher].visibility = value;
+            renderSchool();
+        }
+
+        function toggleRingList(id) {
+            const listContainer = document.getElementById(`list-container-${id}`);
+            const arrow = document.getElementById(`arrow-${id}`);
+            if (listContainer.classList.contains('open')) {
+                listContainer.classList.remove('open');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                listContainer.classList.add('open');
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function toggleAdmin() {
+            if(!isAdmin) {
+                let password = prompt("أدخل كود التعديل الحالي:");
+                if(password === adminPassword) {
+                    isAdmin = true;
+                    document.getElementById('admin-ctrls').style.display = 'flex';
+                    document.getElementById('login-btn').innerText = '🔓 الخروج من وضع الإدارة';
+                    renderSchool();
+                } else {
+                    alert("الكود خاطئ!");
+                }
+            } else {
+                isAdmin = false;
+                document.getElementById('admin-ctrls').style.display = 'none';
+                document.getElementById('login-btn').innerText = '🔒 الدخول لغرفة الإدارة والتعديل';
+                renderSchool();
+            }
+        }
+
+        function changeAdminPassword() {
+            const input = document.getElementById('new-password-input');
+            let newPass = input.value.trim();
+            if(newPass !== "") {
+                adminPassword = newPass;
+                localStorage.setItem('quran_admin_v5_pass', adminPassword);
+                alert(`تم تحديث الكود بنجاح! الجديد هو: ${newPass}`);
+                input.value = "";
+            }
+        }
+
+        function resetToDefaultData() {
+            if(confirm("هل تريد إعادة ضبط الموقع بالكامل؟")) {
+                schoolData = JSON.parse(JSON.stringify(defaultData));
+                aboutData = JSON.parse(JSON.stringify(defaultAbout));
+                renderSchool();
+                alert("تمت إعادة التهيئة بنجاح!");
+            }
+        }
+
+        function addTeacher() {
+            const inputName = document.getElementById('new-teacher');
+            const inputTime = document.getElementById('new-time');
+            let name = inputName.value.trim();
+            let timeVal = inputTime.value.trim();
+
+            if(name !== "") {
+                if(schoolData[name]) {
+                    alert("هذا الأستاذ مسجل بالفعل!");
+                } else {
+                    let timesArray = timeVal ? timeVal.split(',').map(t => t.trim()) : [];
+                    schoolData[name] = {
+                        visibility: "show",
+                        times: timesArray.length > 0 ? timesArray : ["غير محدد"],
+                        students: []
+                    };
+                    inputName.value = "";
+                    inputTime.value = "";
+                    renderSchool();
+                }
+            }
+        }
+
+        function editTeacherName(oldName) {
+            event.stopPropagation();
+            let newName = prompt(`تعديل الاسم من (${oldName}) إلى:`, oldName);
+            if(newName && newName.trim() !== "" && newName !== oldName) {
+                newName = newName.trim();
+                schoolData[newName] = schoolData[oldName];
+                delete schoolData[oldName];
+                renderSchool();
+            }
+        }
+
+        function editTeacherTime(teacher) {
+            event.stopPropagation();
+            let currentTimes = schoolData[teacher].times.join(', ');
+            let newTimeVal = prompt(`تعديل المواقيت (افصل بفاصلة , ):`, currentTimes);
+            if(newTimeVal !== null) {
+                schoolData[teacher].times = newTimeVal.trim() ? newTimeVal.split(',').map(t => t.trim()) : ["غير محدد"];
+                renderSchool();
+            }
+        }
+
+        function addStudent() {
+            const input = document.getElementById('new-student');
+            const teacherSelect = document.getElementById('select-teacher');
+            let studentName = input.value.trim();
+            let selectedTeacher = teacherSelect.value;
+
+            if(studentName !== "" && selectedTeacher) {
+                schoolData[selectedTeacher].students.push(studentName);
+                input.value = "";
+                renderSchool();
+            }
+        }
+
+        function deleteStudent(teacher, index) {
+            if(confirm("هل تريد حذف هذا التلميذ؟")) {
+                schoolData[teacher].students.splice(index, 1);
+                renderSchool();
+            }
+        }
+
+        function deleteTeacher(teacher) {
+            event.stopPropagation();
+            if(confirm(`هل تريد حذف حلقة ${teacher} نهائياً؟`)) {
+                delete schoolData[teacher];
+                renderSchool();
+            }
+        }
+
+        window.onload = renderSchool;
+    </script>
+</body>
+</html>
