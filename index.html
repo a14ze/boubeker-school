@@ -511,20 +511,21 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
-        // إعدادات Firebase الخاصة بك
+        // إعدادات الفايربيز الخاصة بمدرستكم الكريمة
         const firebaseConfig = {
             apiKey: "AIzaSyCpwcz_yHw9PrsCpVQGrhEv0Lbz6jcUHKE",
             authDomain: "boubkerquranschool.firebaseapp.com",
-            databaseURL: "https://boubkerquranschool-default-rtdb.firebaseio.com",
             projectId: "boubkerquranschool",
             storageBucket: "boubkerquranschool.firebasestorage.app",
             messagingSenderId: "1049187708650",
-            appId: "1:1049187708650:web:cc6dc105dab86a80063193"
+            appId: "1:1049187708650:web:cc6dc105dab86a80063193",
+            measurementId: "G-WYYNTFCD2B"
         };
 
+        // تهيئة فايربيز وقاعدة البيانات الفورية
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
@@ -569,23 +570,23 @@
 
         let schoolData = defaultData;
         let aboutData = defaultAbout;
-        let adminPassword = localStorage.getItem('quran_admin_v7_pass') || "1234";
+        let adminPassword = "1234";
         let isAdmin = false;
 
-        // دالة المزامنة مع Firebase
-        function syncToCloud() {
-            set(ref(db, 'quran_school_data'), {
-                school: schoolData,
-                about: aboutData
-            });
-        }
-
-        // الاستماع للتحديثات من السحابة
-        onValue(ref(db, 'quran_school_data'), (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                if (data.school) schoolData = data.school;
-                if (data.about) aboutData = data.about;
+        // الاستماع الفوري والحي للتغييرات في الفايربيز لتحديث الموقع تلقائياً
+        onValue(ref(db), (snapshot) => {
+            const serverData = snapshot.val();
+            if (serverData) {
+                if (serverData.schoolData) schoolData = serverData.schoolData;
+                if (serverData.aboutData) aboutData = serverData.aboutData;
+                if (serverData.adminPassword) adminPassword = serverData.adminPassword;
+            } else {
+                // إذا كانت الداتابيز فارغة أول مرة، نرفع البيانات الافتراضية للإنترنت فوراً
+                set(ref(db), {
+                    schoolData: defaultData,
+                    aboutData: defaultAbout,
+                    adminPassword: "1234"
+                });
             }
             renderSchool();
         });
@@ -613,7 +614,31 @@
             }
         }
 
+        function upgradeDataStructure() {
+            let updated = false;
+            for (let key in schoolData) {
+                if (!schoolData[key].teacherName) {
+                    schoolData[key].teacherName = key;
+                    schoolData[key].groupName = "الفوج العام";
+                    schoolData[key].ageGroup = "غير محدد";
+                    updated = true;
+                }
+                if (schoolData[key].students && schoolData[key].students.length > 0) {
+                    if (typeof schoolData[key].students[0] === 'string') {
+                        schoolData[key].students = schoolData[key].students.map(name => {
+                            return { name: name, quran: "غير محدد" };
+                        });
+                        updated = true;
+                    }
+                }
+            }
+            if (updated) {
+                set(ref(db, 'schoolData'), schoolData);
+            }
+        }
+
         function renderSchool() {
+            upgradeDataStructure();
             sortStudentsByQuran();
 
             document.getElementById('about-title').innerText = aboutData.title;
@@ -640,12 +665,6 @@
             for (let ringKey in schoolData) {
                 totalRings++;
                 let ringInfo = schoolData[ringKey];
-                
-                // إضافة فحص أمان لتجنب الأخطاء إذا كانت مصفوفة الطلاب فارغة في السحابة
-                if (!ringInfo.students) {
-                    ringInfo.students = [];
-                }
-
                 totalStudents += ringInfo.students.length;
 
                 if (!ringInfo.visibility) ringInfo.visibility = "show";
@@ -736,9 +755,7 @@
             document.getElementById('students-count').innerText = totalStudents;
         }
 
-        // --- ربط الدوال بـ window لتتمكن أزرار HTML من استدعائها ---
-
-        window.updateAboutSection = function() {
+        function updateAboutSection() {
             const titleInput = document.getElementById('input-about-title').value.trim();
             const textInput = document.getElementById('input-about-text').value.trim();
             const webInput = document.getElementById('input-url-web').value.trim();
@@ -751,19 +768,20 @@
                 aboutData.webUrl = webInput;
                 aboutData.fbUrl = fbInput;
                 aboutData.phoneNum = phoneInput;
-                syncToCloud(); // حفظ التغيير في Firebase
-                alert("تم الحفظ بنجاح!");
+                set(ref(db, 'aboutData'), aboutData).then(() => {
+                    alert("تم حفظ بيانات الواجهة على الإنترنت بنجاح!");
+                });
             } else {
                 alert("يرجى ملء الحقول الأساسية أولاً!");
             }
-        };
+        }
 
-        window.toggleStudentsVisibility = function(ringKey, value) {
+        function toggleStudentsVisibility(ringKey, value) {
             schoolData[ringKey].visibility = value;
-            syncToCloud(); // حفظ التغيير
-        };
+            set(ref(db, 'schoolData'), schoolData);
+        }
 
-        window.toggleRingList = function(id) {
+        function toggleRingList(id) {
             const listContainer = document.getElementById(`list-container-${id}`);
             const arrow = document.getElementById(`arrow-${id}`);
             if (listContainer.classList.contains('open')) {
@@ -773,10 +791,11 @@
                 listContainer.classList.add('open');
                 arrow.style.transform = 'rotate(180deg)';
             }
-        };
+        }
 
         const headerEl = document.getElementById('main-header');
         let lastTap = 0;
+
         headerEl.addEventListener('click', function (e) {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
@@ -801,35 +820,39 @@
             }
         }
 
-        window.exitAdminMode = function() {
+        function exitAdminMode() {
             isAdmin = false;
             document.getElementById('main-admin-panel').style.display = 'none';
             renderSchool();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             alert("تم الخروج وقفل لوحة التحكم بنجاح.");
-        };
+        }
 
-        window.changeAdminPassword = function() {
+        function changeAdminPassword() {
             const input = document.getElementById('new-password-input');
             let newPass = input.value.trim();
             if(newPass !== "") {
                 adminPassword = newPass;
-                localStorage.setItem('quran_admin_v7_pass', adminPassword);
-                alert(`تم تحديث الكود بنجاح! الجديد هو: ${newPass}`);
-                input.value = "";
+                set(ref(db, 'adminPassword'), adminPassword).then(() => {
+                    alert(`تم تحديث الكود أونلاين بنجاح! الجديد هو: ${newPass}`);
+                    input.value = "";
+                });
             }
-        };
+        }
 
-        window.resetToDefaultData = function() {
-            if(confirm("هل تريد إعادة ضبط الموقع بالكامل؟ سيتم مسح كل شيء!")) {
-                schoolData = JSON.parse(JSON.stringify(defaultData));
-                aboutData = JSON.parse(JSON.stringify(defaultAbout));
-                syncToCloud(); // مسح البيانات من Firebase وإرجاع الافتراضي
-                alert("تمت إعادة التهيئة بنجاح!");
+        function resetToDefaultData() {
+            if(confirm("هل تريد إعادة ضبط الموقع بالكامل على قاعدة البيانات السحابية؟")) {
+                set(ref(db), {
+                    schoolData: defaultData,
+                    aboutData: defaultAbout,
+                    adminPassword: "1234"
+                }).then(() => {
+                    alert("تمت إعادة التهيئة الشاملة بنجاح!");
+                });
             }
-        };
+        }
 
-        window.addTeacher = function() {
+        function addTeacher() {
             const inputName = document.getElementById('new-teacher');
             const inputGroup = document.getElementById('new-group');
             const inputAge = document.getElementById('new-age');
@@ -858,15 +881,15 @@
                     inputGroup.value = "";
                     inputAge.value = "";
                     inputTime.value = "";
-                    syncToCloud(); // رفع البيانات الجديدة للسحابة
+                    set(ref(db, 'schoolData'), schoolData);
                 }
             } else {
                 alert("يرجى كتابة اسم الأستاذ أولاً!");
             }
-        };
+        }
 
-        window.editTeacherName = function(oldKey) {
-            event.stopPropagation();
+        function editTeacherName(oldKey) {
+            if(window.event) window.event.stopPropagation();
             let currentName = schoolData[oldKey].teacherName;
             let newName = prompt(`تعديل اسم الأستاذ:`, currentName);
             if(newName && newName.trim() !== "" && newName.trim() !== currentName) {
@@ -877,12 +900,12 @@
                 schoolData[newKey] = schoolData[oldKey];
                 delete schoolData[oldKey];
                 
-                syncToCloud(); // حفظ في السحابة
+                set(ref(db, 'schoolData'), schoolData);
             }
-        };
+        }
 
-        window.editGroupNameAndAge = function(oldKey) {
-            event.stopPropagation();
+        function editGroupNameAndAge(oldKey) {
+            if(window.event) window.event.stopPropagation();
             let currentGroup = schoolData[oldKey].groupName;
             let currentAge = schoolData[oldKey].ageGroup || "غير محدد";
             
@@ -902,24 +925,22 @@
                 schoolData[newKey] = schoolData[oldKey];
                 delete schoolData[oldKey];
             }
-            syncToCloud(); // حفظ في السحابة
-            alert("تم تحديث بيانات الفوج بنجاح!");
-        };
+            set(ref(db, 'schoolData'), schoolData);
+        }
 
-        window.editTeacherTime = function(ringKey) {
-            event.stopPropagation();
+        function editTeacherTime(ringKey) {
+            if(window.event) window.event.stopPropagation();
             let currentTimes = schoolData[ringKey].times.join(', ');
             let newTimeVal = prompt(`تعديل المواقيت (افصل بفاصلة , ):`, currentTimes);
             if(newTimeVal !== null) {
                 schoolData[ringKey].times = newTimeVal.trim() ? newTimeVal.split(',').map(t => t.trim()) : ["غير محدد"];
-                syncToCloud(); // حفظ في السحابة
+                set(ref(db, 'schoolData'), schoolData);
             }
-        };
+        }
 
-        window.bulkEditStudentsQuran = function(ringKey) {
-            event.stopPropagation();
-            // إصلاح لتجنب خطأ إذا لم يكن هناك طلاب
-            if (!schoolData[ringKey].students || schoolData[ringKey].students.length === 0) {
+        function bulkEditStudentsQuran(ringKey) {
+            if(window.event) window.event.stopPropagation();
+            if (schoolData[ringKey].students.length === 0) {
                 alert("لا يوجد طلاب في هذا الفوج لتعديل حفظهم جماعياً!");
                 return;
             }
@@ -929,12 +950,11 @@
                 schoolData[ringKey].students.forEach(student => {
                     student.quran = finalQuran;
                 });
-                syncToCloud(); // حفظ في السحابة
-                alert("تم تحديث حفظ جميع طلاب الفوج بنجاح!");
+                set(ref(db, 'schoolData'), schoolData);
             }
-        };
+        }
 
-        window.addStudent = function() {
+        function addStudent() {
             const inputName = document.getElementById('new-student');
             const inputQuran = document.getElementById('new-student-quran');
             const teacherSelect = document.getElementById('select-teacher');
@@ -944,48 +964,57 @@
             let selectedRingKey = teacherSelect.value;
 
             if(studentName !== "" && selectedRingKey) {
-                // إصلاح أمان: تهيئة المصفوفة إذا كانت غير موجودة
-                if (!schoolData[selectedRingKey].students) {
-                    schoolData[selectedRingKey].students = [];
-                }
-                
                 schoolData[selectedRingKey].students.push({
                     name: studentName,
                     quran: studentQuran
                 });
                 inputName.value = "";
                 inputQuran.value = "";
-                syncToCloud(); // حفظ في السحابة
+                set(ref(db, 'schoolData'), schoolData);
             }
-        };
+        }
 
-        window.editStudentQuran = function(ringKey, index) {
+        function editStudentQuran(ringKey, index) {
             let currentQuran = schoolData[ringKey].students[index].quran || "غير محدد";
             let studentName = schoolData[ringKey].students[index].name;
             let newQuran = prompt(`تعديل مقدار حفظ التلميذ (${studentName}):`, currentQuran);
             if (newQuran !== null) {
                 schoolData[ringKey].students[index].quran = newQuran.trim() || "غير محدد";
-                syncToCloud(); // حفظ في السحابة
+                set(ref(db, 'schoolData'), schoolData);
             }
-        };
+        }
 
-        window.deleteStudent = function(ringKey, index) {
+        function deleteStudent(ringKey, index) {
             if(confirm("هل تريد حذف هذا التلميذ؟")) {
                 schoolData[ringKey].students.splice(index, 1);
-                syncToCloud(); // حفظ في السحابة
+                set(ref(db, 'schoolData'), schoolData);
             }
-        };
+        }
 
-        window.deleteTeacher = function(ringKey) {
-            event.stopPropagation();
+        function deleteTeacher(ringKey) {
+            if(window.event) window.event.stopPropagation();
             if(confirm(`هل تريد حذف حلقة الأستاذ (${schoolData[ringKey].teacherName}) - فوج (${schoolData[ringKey].groupName}) نهائياً؟`)) {
                 delete schoolData[ringKey];
-                syncToCloud(); // حفظ في السحابة
+                set(ref(db, 'schoolData'), schoolData);
             }
-        };
+        }
 
-        // ملاحظة: لم نعد نحتاج window.onload لأننا نستدعي renderSchool() بمجرد جلب البيانات من السحابة
-
+        // جعل الدوال متاحة للواجهة نظراً لتبني نظام الـ Module الشامل للاتصال
+        window.toggleRingList = toggleRingList;
+        window.toggleStudentsVisibility = toggleStudentsVisibility;
+        window.editTeacherName = editTeacherName;
+        window.editGroupNameAndAge = editGroupNameAndAge;
+        window.editTeacherTime = editTeacherTime;
+        window.bulkEditStudentsQuran = bulkEditStudentsQuran;
+        window.editStudentQuran = editStudentQuran;
+        window.deleteStudent = deleteStudent;
+        window.deleteTeacher = deleteTeacher;
+        window.exitAdminMode = exitAdminMode;
+        window.updateAboutSection = updateAboutSection;
+        window.addTeacher = addTeacher;
+        window.addStudent = addStudent;
+        window.changeAdminPassword = changeAdminPassword;
+        window.resetToDefaultData = resetToDefaultData;
     </script>
 </body>
 </html>
