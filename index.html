@@ -492,12 +492,23 @@
                     <button class="btn-main" onclick="addTeacher()">➕ فتح الفوج</button>
                 </div>
 
-                <div class="form-group">
-                    <label style="font-weight: bold;">👤 تسجيل تلميذ جديد:</label>
-                    <input type="text" id="new-student" placeholder="اسم التلميذ الكامل...">
-                    <input type="text" id="new-student-quran" placeholder="مقدار الحفظ (مثال: 5 أحزاب)...">
-                    <select id="select-teacher" style="width: 100%;"></select>
-                    <button class="btn-main" style="background-color: var(--primary-light);" onclick="addStudent()">➕ تسجيل</button>
+                <div class="form-group" style="background-color: #f5f9f6; padding: 12px; border-radius: 8px; border: 1px solid #cde4cf; flex-direction: column; align-items: flex-start;">
+                    <label style="font-weight: bold; color: var(--primary-dark); margin-bottom: 5px;">👤 تسجيل طلبة جدد (إضافة متعددة سريعة):</label>
+                    <textarea id="new-students-list" rows="4" style="width: 100%; margin-bottom: 8px; font-size: 0.95rem; padding: 8px;" placeholder="اكتب أو الصق أسماء الطلبة هنا (كل اسم في سطر منفصل)...&#10;يمكنك كتابة الاسم مباشرة أو الاسم متبوعاً بشرطة (-) ثم مقدار الحفظ.&#10;مثال:&#10;أحمد العروي&#10;ياسين مصطفى - 5 أحزاب&#10;عبد الله قيروان - حزبين"></textarea>
+                    
+                    <div style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; width: 100%;">
+                            <div style="flex: 1; min-width: 180px;">
+                                <span style="font-size: 0.85rem; font-weight: bold; color: #555;">اختر الحلقة/الفوج:</span>
+                                <select id="select-teacher" style="width: 100%; margin-top: 4px;"></select>
+                            </div>
+                            <div style="flex: 1; min-width: 180px;">
+                                <span style="font-size: 0.85rem; font-weight: bold; color: #555;">مقدار الحفظ الافتراضي (للبقية):</span>
+                                <input type="text" id="new-student-quran" placeholder="مثال: غير محدد" style="width: 100%; margin-top: 4px;">
+                            </div>
+                        </div>
+                        <button class="btn-main" style="background-color: var(--primary-light); width: 100%; padding: 10px; margin-top: 4px;" onclick="addStudentsBulk()">➕ تسجيل هذه القائمة دفعة واحدة</button>
+                    </div>
                 </div>
 
                 <div class="form-group" style="background: #fbf9f6; padding: 8px; border-radius: 6px;">
@@ -515,7 +526,6 @@
     </div>
 
     <script>
-        // البيانات الافتراضية الأساسية للموقع
         const defaultData = {
             "الأستاذ زرق الراس - الفوج الأول": {
                 teacherName: "الأستاذ زرق الراس",
@@ -560,8 +570,9 @@
         let aboutData = defaultAbout;
         let adminPassword = "1234";
         let isAdmin = false;
+        let openRingsState = {}; // الهيكل الذكي الجديد لتذكر حالة الحلقات المفتوحة ومنع إغلاقها
 
-        // 1. تهيئة وإعداد Firebase بالمعلومات الحقيقية الخاصة بمشروعك
+        // 1. تهيئة وإعداد Firebase بمعلومات مشروعك الحقيقية
         const firebaseConfig = {
             apiKey: "AIzaSyCpwcz_yHw9PrsCpVQGrhEv0Lbz6jcUHKE",
             authDomain: "boubkerquranschool.firebaseapp.com",
@@ -576,7 +587,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 2. ربط جلب البيانات السحابية الحية (Realtime Stream) بدلاً من الـ LocalStorage
+        // 2. ربط جلب البيانات السحابية الحية (Realtime Stream)
         db.ref('schoolData').on('value', (snapshot) => {
             if (snapshot.exists()) {
                 schoolData = snapshot.val();
@@ -654,7 +665,7 @@
             }
         }
 
-        // 4. دالة بناء وعرض واجهة المستخدم الرسومية
+        // 4. دالة بناء وعرض واجهة المستخدم الرسومية بشكل مستقر تمنع الانغلاق
         function renderSchool() {
             sortStudentsByQuran();
 
@@ -673,6 +684,10 @@
 
             const container = document.getElementById('rings-container');
             const selectTeacher = document.getElementById('select-teacher');
+            
+            // الاحتفاظ بالقيمة التي كان يحددها الأستاذ في خانة الاختيار قبل البناء
+            const currentSelectedTeacher = selectTeacher.value;
+            
             container.innerHTML = '';
             selectTeacher.innerHTML = '';
 
@@ -689,6 +704,9 @@
                 let option = document.createElement('option');
                 option.value = ringKey;
                 option.innerText = `${ringInfo.teacherName} (${ringInfo.groupName})`;
+                if (ringKey === currentSelectedTeacher) {
+                    option.selected = true; // استرجاع الخيار السابق تلقائياً لتسهيل المهام
+                }
                 selectTeacher.appendChild(option);
 
                 let ringCard = document.createElement('div');
@@ -704,8 +722,13 @@
                 }
 
                 let currentId = totalRings;
+                
+                // فحص هل كانت الحلقة مفتوحة مسبقاً بناءً على اسمها بدلاً من المعرف الرقمي المتقلب
+                let isOpenClass = openRingsState[ringKey] ? 'open' : '';
+                let arrowTransform = openRingsState[ringKey] ? 'transform: rotate(180deg);' : '';
+
                 ringCard.innerHTML = `
-                    <div class="ring-header" onclick="toggleRingList(${currentId})">
+                    <div class="ring-header">
                         <div style="flex: 1; padding-left: 10px;">
                             <h2>حلقة ${ringInfo.teacherName} ${ringInfo.visibility === 'hide' ? '<span style="font-size:0.75rem; color:#ff9999; font-weight:normal;">(مخفية)</span>' : ''}</h2>
                             <div class="ring-meta-info">
@@ -716,7 +739,7 @@
                         </div>
                         <div class="header-left-side">
                             <span class="count-badge">${ringInfo.students ? ringInfo.students.length : 0} ط</span>
-                            <span class="arrow-icon" id="arrow-${currentId}">▼</span>
+                            <span class="arrow-icon" id="arrow-${currentId}" style="${arrowTransform}">▼</span>
                         </div>
                     </div>
                     
@@ -737,11 +760,16 @@
                         <button class="btn-sm btn-danger" onclick="deleteTeacher('${ringKey}')">❌ حذف</button>
                     </div>
 
-                    <div class="student-list-container" id="list-container-${currentId}">
+                    <div class="student-list-container ${isOpenClass}" id="list-container-${currentId}">
                         <ul class="student-list" id="list-${currentId}"></ul>
                     </div>
                 `;
                 
+                // ربط حدث الضغط برمجياً لحل مشاكل تداخل الرموز والمسافات في النصوص العربية
+                ringCard.querySelector('.ring-header').addEventListener('click', function() {
+                    toggleRingList(currentId, ringKey);
+                });
+
                 container.appendChild(ringCard);
 
                 let ul = document.getElementById(`list-${currentId}`);
@@ -770,11 +798,9 @@
 
             document.getElementById('teachers-count').innerText = totalRings;
             document.getElementById('students-count').innerText = totalStudents;
-            
-            // تم إلغاء أسطر الـ LocalStorage هنا لتتحكم بالبيانات سحابياً بشكل كامل ومنع الحلقات التكرارية
         }
 
-        // 5. دوال لوحة التحكم والتعديل (تقوم بالحفظ السحابي فوراً في Firebase)
+        // 5. دوال لوحة التحكم والتعديل السحابي الفوري
         function updateAboutSection() {
             const titleInput = document.getElementById('input-about-title').value.trim();
             const textInput = document.getElementById('input-about-text').value.trim();
@@ -801,15 +827,18 @@
             db.ref('schoolData').set(schoolData);
         }
 
-        function toggleRingList(id) {
+        // تحديث دالة التبديل لحفظ حالة الفتح والإغلاق في الذاكرة الحية
+        function toggleRingList(id, ringKey) {
             const listContainer = document.getElementById(`list-container-${id}`);
             const arrow = document.getElementById(`arrow-${id}`);
             if (listContainer.classList.contains('open')) {
                 listContainer.classList.remove('open');
                 arrow.style.transform = 'rotate(0deg)';
+                openRingsState[ringKey] = false; // حفظ الحالة مغلقة
             } else {
                 listContainer.classList.add('open');
                 arrow.style.transform = 'rotate(180deg)';
+                openRingsState[ringKey] = true; // حفظ الحالة مفتوحة
             }
         }
 
@@ -917,6 +946,12 @@
                 schoolData[newKey] = schoolData[oldKey];
                 delete schoolData[oldKey];
                 
+                // تحديث حالة الفتح للمفتاح الجديد لتجنب إغلاق القائمة
+                if(openRingsState[oldKey]) {
+                    openRingsState[newKey] = true;
+                    delete openRingsState[oldKey];
+                }
+                
                 db.ref('schoolData').set(schoolData);
             }
         }
@@ -941,6 +976,11 @@
             if (newKey !== oldKey) {
                 schoolData[newKey] = schoolData[oldKey];
                 delete schoolData[oldKey];
+                
+                if(openRingsState[oldKey]) {
+                    openRingsState[newKey] = true;
+                    delete openRingsState[oldKey];
+                }
             }
             db.ref('schoolData').set(schoolData);
             alert("تم تحديث بيانات الفوج سحابياً!");
@@ -973,26 +1013,63 @@
             }
         }
 
-        function addStudent() {
-            const inputName = document.getElementById('new-student');
+        // دالة الإضافة الجماعية المحدثة والمبتكرة بالكامل
+        function addStudentsBulk() {
+            const textarea = document.getElementById('new-students-list');
             const inputQuran = document.getElementById('new-student-quran');
             const teacherSelect = document.getElementById('select-teacher');
             
-            let studentName = inputName.value.trim();
-            let studentQuran = inputQuran.value.trim() || "غير محدد";
+            let lines = textarea.value.split('\n');
+            let defaultQuran = inputQuran.value.trim() || "غير محدد";
             let selectedRingKey = teacherSelect.value;
 
-            if(studentName !== "" && selectedRingKey) {
-                if(!schoolData[selectedRingKey].students) {
-                    schoolData[selectedRingKey].students = [];
+            if(!selectedRingKey) {
+                alert("يرجى اختيار الفوج المطلوب أولاً!");
+                return;
+            }
+
+            let addedCount = 0;
+            if(!schoolData[selectedRingKey].students) {
+                schoolData[selectedRingKey].students = [];
+            }
+
+            lines.forEach(line => {
+                let trimmedLine = line.trim();
+                if(trimmedLine !== "") {
+                    let name = trimmedLine;
+                    let quran = defaultQuran;
+
+                    // معالجة إذا كتب الأستاذ الاسم وبجانبه شرطة ومقدار الحفظ
+                    if(trimmedLine.includes('-')) {
+                        let parts = trimmedLine.split('-');
+                        name = parts[0].trim();
+                        quran = parts.slice(1).join('-').trim() || defaultQuran;
+                    } else if(trimmedLine.includes('–')) {
+                        let parts = trimmedLine.split('–');
+                        name = parts[0].trim();
+                        quran = parts.slice(1).join('–').trim() || defaultQuran;
+                    }
+
+                    if(name !== "") {
+                        schoolData[selectedRingKey].students.push({
+                            name: name,
+                            quran: quran
+                        });
+                        addedCount++;
+                    }
                 }
-                schoolData[selectedRingKey].students.push({
-                    name: studentName,
-                    quran: studentQuran
-                });
-                inputName.value = "";
-                inputQuran.value = "";
+            });
+
+            if(addedCount > 0) {
+                textarea.value = ""; // إخلاء حقل القائمة النصية بنجاح بعد التسجيل
+                
+                // تلقائياً نجعل الفوج المضاف إليه مفتوحاً ليرى الأستاذ النتيجة فوراً دون انغلاق النافذة
+                openRingsState[selectedRingKey] = true;
+
                 db.ref('schoolData').set(schoolData);
+                alert(`تم بنجاح إضافة قائمة تحتوي على ${addedCount} طالب دفعة واحدة سحابياً!`);
+            } else {
+                alert("يرجى كتابة اسم طالب واحد على الأقل داخل المربع!");
             }
         }
 
@@ -1017,11 +1094,11 @@
             event.stopPropagation();
             if(confirm(`هل تريد حذف حلقة الأستاذ (${schoolData[ringKey].teacherName}) - فوج (${schoolData[ringKey].groupName}) نهائياً؟`)) {
                 delete schoolData[ringKey];
+                if(openRingsState[ringKey]) delete openRingsState[ringKey];
                 db.ref('schoolData').set(schoolData);
             }
         }
 
-        // تشغيل فحص البنية فور التحميل الأول للموقع
         window.onload = function() {
             upgradeDataStructure();
         };
